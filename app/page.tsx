@@ -60,7 +60,7 @@ export default function BakeryLandingPage() {
                   {item.name}
                 </h3>
                 <p className="text-amber-700">
-                  Limited time offer! Get it while it's hot!
+                  Limited time offer! Get it while its hot!
                 </p>
               </div>
             ))}
