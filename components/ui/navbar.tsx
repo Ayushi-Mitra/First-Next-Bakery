@@ -63,7 +63,7 @@ const Navbar = () => {
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
-              className="bg-blue-600 inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-800 focus:ring-white"
+              className="bg-orange-600 inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-orange-600 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-offset-white focus:ring-white"
               aria-controls="mobile-menu"
               aria-expanded="false"
             >
@@ -114,7 +114,7 @@ const Navbar = () => {
                 href="/"
                 className={`${
                   active ? "bg-blue-600" : ""
-                } text-white block px-3 py-2 rounded-md text-base font-medium`}
+                } text-black block px-3 py-2 rounded-md text-base font-medium`}
               >
                 Home
               </Link>
@@ -126,7 +126,7 @@ const Navbar = () => {
                 href="/about"
                 className={`${
                   active ? "bg-blue-600" : ""
-                } text-white block px-3 py-2 rounded-md text-base font-medium`}
+                } text-black block px-3 py-2 rounded-md text-base font-medium`}
               >
                 About
               </Link>
@@ -138,27 +138,30 @@ const Navbar = () => {
                 href="/products"
                 className={`${
                   active ? "bg-blue-600" : ""
-                } text-white block px-3 py-2 rounded-md text-base font-medium`}
+                } text-black block px-3 py-2 rounded-md text-base font-medium`}
               >
                 Products
               </Link>
             )}
           </Menu.Item>
         </div>
-        <div className="pt-4 pb-3 border-t border-blue-400">
+        <div className="pt-4 pb-3">
           <div className="flex items-center px-5">
-            <Link href="/login" className="w-full">
+            <Link href="/login">
               <Button
                 variant="outline"
-                className="w-full text-white border-white hover:bg-white hover:text-blue-700 mb-2"
+                className="border-white hover:bg-white hover:text-[#fc4c4c]"
               >
                 Login
               </Button>
             </Link>
           </div>
           <div className="flex items-center px-5">
-            <Link href="/signup" className="w-full">
-              <Button className="w-full bg-white text-blue-700 hover:bg-blue-100">
+            <Link href="/signup">
+              <Button
+                variant="outline"
+                className="border-white hover:bg-white hover:text-[#fc4c4c]"
+              >
                 Sign Up
               </Button>
             </Link>

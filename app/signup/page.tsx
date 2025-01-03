@@ -1,7 +1,66 @@
+"use client";
+
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setIsLoading(true);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          username: formData.name,
+          confirmPassword: formData.confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      setSuccess("Signup successful! Welcome to Sweet Delights Bakery!");
+      // You might want to redirect the user or update the UI here
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-amber-50">
       <main className="flex-grow container mx-auto px-4 py-12 flex flex-col items-center justify-center">
@@ -19,7 +78,9 @@ export default function Home() {
             <h3 className="text-2xl font-semibold text-amber-800 mb-4">
               Sign Up for Sweet Treats
             </h3>
-            <form className="space-y-6">
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+            {success && <p className="text-green-500 mb-4">{success}</p>}
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="name" className="block text-amber-900 mb-1">
                   Name
@@ -27,8 +88,12 @@ export default function Home() {
                 <Input
                   type="text"
                   id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   placeholder="Your Name"
                   className="w-full"
+                  required
                 />
               </div>
               <div>
@@ -38,8 +103,12 @@ export default function Home() {
                 <Input
                   type="email"
                   id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="your@email.com"
                   className="w-full"
+                  required
                 />
               </div>
               <div>
@@ -49,8 +118,12 @@ export default function Home() {
                 <Input
                   type="password"
                   id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder="Your Password"
                   className="w-full"
+                  required
                 />
               </div>
               <div>
@@ -63,13 +136,21 @@ export default function Home() {
                 <Input
                   type="password"
                   id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
                   placeholder="Confirm Your Password"
                   className="w-full"
+                  required
                 />
               </div>
               <div>
-                <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white">
-                  Sign Up
+                <Button
+                  type="submit"
+                  className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Signing Up..." : "Sign Up"}
                 </Button>
               </div>
             </form>

@@ -1,7 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import { Cake, Coffee, ShoppingBag } from "lucide-react";
+import ImageCarousel from "@/components/ImageCarousel";
 
 export default function BakeryLandingPage() {
+  const carouselImages = [
+    { src: "/bakes.jpeg", alt: "Delicious baked goods" },
+    { src: "/pastries.jpg", alt: "Assorted pastries" },
+  ];
+
   return (
     <div className="min-h-screen bg-amber-50">
       {/* Header */}
@@ -11,23 +19,17 @@ export default function BakeryLandingPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Section with Carousel */}
       <section
         id="home"
         className="relative h-[60vh] flex items-center justify-center"
       >
-        <Image
-          src="/bakes.jpeg"
-          alt="Delicious baked goods"
-          layout="fill"
-          objectFit="cover"
-          className="absolute"
-        />
+        <ImageCarousel images={carouselImages} />
         <div className="relative z-10 text-center">
-          <h2 className="text-4xl md:text-6xl font-bold text-yellow-100 mb-4">
+          <h2 className="text-4xl md:text-6xl font-bold text-amber-950 mb-4 drop-shadow-lg">
             Welcome to Sweet Delights
           </h2>
-          <p className="text-xl md:text-2xl text-yellow-100">
+          <p className="text-xl md:text-2xl text-amber-950 drop-shadow-lg">
             Indulge in our freshly baked treats!
           </p>
         </div>
