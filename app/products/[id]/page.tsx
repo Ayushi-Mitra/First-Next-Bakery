@@ -1,12 +1,8 @@
 import { categories } from "../../data/product";
 import ProductList from "@/components/ProductList";
 
-export default async function CategoryPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const categoryId = await params.id;
+export default function CategoryPage({ params }: { params: { id: string } }) {
+  const { id: categoryId } = params; // Extract `id` directly.
   const category = categories.find((cat) => cat.id === categoryId);
 
   if (!category) {
@@ -20,9 +16,8 @@ export default async function CategoryPage({
     </div>
   );
 }
-
 export function generateStaticParams() {
   return categories.map((category) => ({
-    id: category.id.toString(),
+    params: { id: category.id.toString() }, // Ensure `params` has the correct structure.
   }));
 }
