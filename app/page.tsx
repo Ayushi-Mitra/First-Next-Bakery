@@ -7,7 +7,9 @@ import ImageCarousel from "@/components/ImageCarousel";
 export default function BakeryLandingPage() {
   const carouselImages = [
     { src: "/bakes.jpeg", alt: "Delicious baked goods" },
-    { src: "/pastries.jpg", alt: "Assorted pastries" },
+    { src: "/bakery1.jpg", alt: "Assorted bakery items" },
+    { src: "/bakery2.jpg", alt: "Assorted bakery items" },
+    { src: "/bakery3.jpg", alt: "Assorted bakery items" },
   ];
 
   return (
