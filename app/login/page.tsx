@@ -5,6 +5,7 @@ import { Cake } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/contexts/authContext"; // Import the useAuth hook
 
 export default function BakeryLogin() {
   const [identifier, setIdentifier] = useState("");
@@ -12,6 +13,7 @@ export default function BakeryLogin() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { login } = useAuth(); // Use the login function from AuthContext
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,19 +35,11 @@ export default function BakeryLogin() {
         throw new Error(data.message || "Login failed");
       }
 
-      // Handle successful login
-      localStorage.setItem("token", data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          userId: data.userId,
-          email: data.email,
-          username: data.username,
-        })
-      );
+      // Use the login function from AuthContext
+      login(data.token, data.email, data.username);
 
       // Redirect to dashboard or home page
-      router.push("/dashboard");
+      router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

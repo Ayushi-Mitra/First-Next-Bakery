@@ -4,10 +4,20 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu } from "@headlessui/react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/app/contexts/authContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { LogOut, User } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const { token, username, logout } = useAuth();
+  console.log(token);
   return (
     <nav className="bg-gradient-to-r from-slate-50 to-amber-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,22 +51,55 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6 space-x-4">
-              <Link href="/login">
-                <Button
-                  variant="outline"
-                  className="border-white hover:bg-white hover:text-[#fc4c4c]"
-                >
-                  Login
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button
-                  variant="outline"
-                  className="border-white hover:bg-white hover:text-[#fc4c4c]"
-                >
-                  Sign Up
-                </Button>
-              </Link>
+              {token ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative h-8 w-8 rounded-full"
+                    >
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src="/avatars/01.png"
+                          alt={username || ""}
+                        />
+                        <AvatarFallback>
+                          {username?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuItem>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>{username}</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={logout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Link href="/login">
+                    <Button
+                      variant="outline"
+                      className="border-white hover:bg-white hover:text-[#fc4c4c]"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                  <Link href="/signup">
+                    <Button
+                      variant="outline"
+                      className="border-white hover:bg-white hover:text-[#fc4c4c]"
+                    >
+                      Sign Up
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
           <div className="-mr-2 flex md:hidden">
@@ -145,27 +188,50 @@ const Navbar = () => {
             )}
           </Menu.Item>
         </div>
-        <div className="pt-4 pb-3">
-          <div className="flex items-center px-5">
-            <Link href="/login">
-              <Button
-                variant="outline"
-                className="border-white hover:bg-white hover:text-[#fc4c4c]"
-              >
-                Login
+        <div className="pt-4 pb-3 border-t border-gray-700">
+          {token ? (
+            <div className="flex items-center px-5">
+              <div className="flex-shrink-0">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src="/avatars/01.png" alt={username || ""} />
+                  <AvatarFallback>
+                    {username?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="ml-3">
+                <div className="text-base font-medium leading-none text-white">
+                  {username}
+                </div>
+              </div>
+              <Button variant="ghost" className="ml-auto" onClick={logout}>
+                <LogOut className="h-5 w-5" />
               </Button>
-            </Link>
-          </div>
-          <div className="flex items-center px-5">
-            <Link href="/signup">
-              <Button
-                variant="outline"
-                className="border-white hover:bg-white hover:text-[#fc4c4c]"
-              >
-                Sign Up
-              </Button>
-            </Link>
-          </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex items-center px-5">
+                <Link href="/login" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full border-white hover:bg-white hover:text-[#fc4c4c]"
+                  >
+                    Login
+                  </Button>
+                </Link>
+              </div>
+              <div className="flex items-center px-5">
+                <Link href="/signup" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full border-white hover:bg-white hover:text-[#fc4c4c]"
+                  >
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </Menu>
     </nav>

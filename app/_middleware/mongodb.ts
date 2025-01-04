@@ -1,43 +1,54 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
-
-if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
-  );
+// Type for our cached connection to track connection state
+interface DatabaseConnection {
+  isConnected?: boolean;
 }
 
-interface Cached {
-  conn: Mongoose | null;
-  promise: Promise<Mongoose> | null;
-}
+// Create a singleton connection object to maintain connection state across calls
+const connection: DatabaseConnection = {};
 
-// This is to ensure TypeScript knows that `global.mongoose` exists
-declare global {
-  var mongoose: Cached;
-}
-
-let cached = global.mongoose || { conn: null, promise: null };
-
-async function connectToDatabase(): Promise<Mongoose> {
-  if (cached.conn) {
-    return cached.conn;
+async function connectToDatabase() {
+  // Return early if we already have an active connection
+  if (connection.isConnected) {
+    return;
   }
 
-  if (!cached.promise) {
-    const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+  // Ensure the MongoDB URI is defined in environment variables
+  if (!process.env.MONGODB_URI) {
+    throw new Error("Please define MONGODB_URI environment variable");
+  }
+
+  try {
+    // Attempt to connect to MongoDB with basic configuration
+    const db = await mongoose.connect(process.env.MONGODB_URI, {
       bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
     });
+
+    // Update connection state based on the readyState of the first connection
+    connection.isConnected = db.connections[0].readyState === 1;
+
+    console.log("Successfully connected to MongoDB");
+  } catch (error) {
+    console.error("Failed to connect to MongoDB:", error);
+    throw error;
   }
-  cached.conn = await cached.promise;
-  return cached.conn;
 }
+
+// Set up event listeners to monitor connection status
+mongoose.connection.on("error", (error) => {
+  console.error("MongoDB connection error:", error);
+  connection.isConnected = false;
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("MongoDB disconnected");
+  connection.isConnected = false;
+});
+
+mongoose.connection.on("connected", () => {
+  console.log("MongoDB connected");
+  connection.isConnected = true;
+});
 
 export default connectToDatabase;

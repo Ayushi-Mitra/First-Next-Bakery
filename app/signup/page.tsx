@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/app/contexts/authContext"; // Import useAuth hook
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -14,6 +16,8 @@ export default function Home() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth(); // Use the login function from AuthContext
+  const router = useRouter(); // Initialize router for navigation
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,7 +57,14 @@ export default function Home() {
       }
 
       setSuccess("Signup successful! Welcome to Sweet Delights Bakery!");
-      // You might want to redirect the user or update the UI here
+
+      // Use the login function from AuthContext
+      login(data.token, data.email, data.username);
+
+      // Redirect the user to the dashboard or home page
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
