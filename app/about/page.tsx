@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Clock, MapPin, Phone, Mail } from "lucide-react";
 
 export default function AboutPage() {
