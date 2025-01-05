@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import { Cake, Coffee, ShoppingBag } from "lucide-react";
 import ImageCarousel from "@/components/ImageCarousel";
